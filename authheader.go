@@ -6,7 +6,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/hex"
 	"fmt"
 	"net/http"
 	"os"
@@ -93,7 +92,7 @@ func (a *AuthHeaderMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	message := authTs + "." + authClaims
 	sig := hmac.New(sha256.New, []byte(a.sharedSecret))
 	sig.Write([]byte(message))
-	authSig := hex.EncodeToString(sig.Sum(nil))
+	authSig := base64.RawStdEncoding.EncodeToString(sig.Sum(nil))
 
 	// Add new headers
 	r.Header.Set("X-Auth-Claims", authClaims)
